@@ -6,28 +6,14 @@ import numpy as np
 import pandas as pd
 from zhoa_zhang_ecg_sqi import ecg_quality
 
-ecg_ctr_data = pd.read_csv(
-    "/Users/liam/Library/Mobile Documents/com~apple~CloudDocs/Purdue/Classes/UnderGrad Research/NeoWarm/ECG Testing/ECG_data/01/ECG_3M_Control.csv"
-)
-ECG_1x1_WI_ts_g_data = pd.read_csv(
-    "/Users/liam/Library/Mobile Documents/com~apple~CloudDocs/Purdue/Classes/UnderGrad Research/NeoWarm/ECG Testing/ECG_data/01/ECG_1x1_WI_ts_g.csv"
-)
-ECG_3x1_WI_ts_g_data = pd.read_csv(
-    "/Users/liam/Library/Mobile Documents/com~apple~CloudDocs/Purdue/Classes/UnderGrad Research/NeoWarm/ECG Testing/ECG_data/01/ECG_3x1_WI_ts_g.csv"
-)
+ecg_ctr_data = pd.read_csv("./ECG_data/01/ECG_3M_Control.csv")
+ECG_1x1_WI_ts_g_data = pd.read_csv("./ECG_data/01/ECG_1x1_WI_ts_g.csv")
+ECG_3x1_WI_ts_g_data = pd.read_csv("./ECG_data/01/ECG_3x1_WI_ts_g.csv")
 
-ECG_1x1_CT_ts_ng_nf_ada_data = pd.read_csv(
-    "/Users/liam/Library/Mobile Documents/com~apple~CloudDocs/Purdue/Classes/UnderGrad Research/NeoWarm/ECG Testing/ECG_data/03/ECG_1x1_CT_ts_ng_nf_ada.csv"
-)
-ECG_1x1_CT_ts_ng_nf_lab_data = pd.read_csv(
-    "/Users/liam/Library/Mobile Documents/com~apple~CloudDocs/Purdue/Classes/UnderGrad Research/NeoWarm/ECG Testing/ECG_data/03/ECG_1x1_CT_ts_ng_nf_lab.csv"
-)
-ECG_3x1_CT_cn_g_wf_ada_data = pd.read_csv(
-    "/Users/liam/Library/Mobile Documents/com~apple~CloudDocs/Purdue/Classes/UnderGrad Research/NeoWarm/ECG Testing/ECG_data/03/ECG_3x1_CT_cn_g_wf_ada.csv"
-)
-ECG_3x1_CT_fs_g_wf_ada_data = pd.read_csv(
-    "/Users/liam/Library/Mobile Documents/com~apple~CloudDocs/Purdue/Classes/UnderGrad Research/NeoWarm/ECG Testing/ECG_data/03/ECG_3x1_CT_fs_g_wf_ada.csv"
-)
+ECG_1x1_CT_ts_ng_nf_ada_data = pd.read_csv("./ECG_data/03/ECG_1x1_CT_ts_ng_nf_ada.csv")
+ECG_1x1_CT_ts_ng_nf_lab_data = pd.read_csv("./ECG_data/03/ECG_1x1_CT_ts_ng_nf_lab.csv")
+ECG_3x1_CT_cn_g_wf_ada_data = pd.read_csv("./ECG_data/03/ECG_3x1_CT_cn_g_wf_ada.csv")
+ECG_3x1_CT_fs_g_wf_ada_data = pd.read_csv("./ECG_data/03/ECG_3x1_CT_fs_g_wf_ada.csv")
 
 ecg_ctr = ecg_ctr_data[" ECG Filtered (mV)"].tolist()
 ECG_1x1_WI = ECG_1x1_WI_ts_g_data[" ECG Filtered (mV)"].tolist()
