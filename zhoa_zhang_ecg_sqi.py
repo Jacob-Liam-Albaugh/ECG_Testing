@@ -53,20 +53,43 @@ def ecg_quality(
     )
 
     # Classify indices based on simple heuristic fusion
-    n_optimal, n_suspicious, n_unqualified, conclusion = _classifiy_simple(
-        sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI
-    )
+    (
+        n_optimal,
+        n_suspicious,
+        n_unqualified,
+        conclusion,
+        qcolor,
+        pcolor,
+        ccolor,
+        kcolor,
+        bascolor,
+    ) = _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI)
+
+    SQIs = {
+        "qSQI": round(qSQI, 3),
+        "pSQI": round(pSQI, 3),
+        "cSQI": round(cSQI, 3),
+        "kSQI": round(kSQI, 3),
+        "sSQI": round(sSQI, 3),
+        "basSQI": round(basSQI, 3),
+    }
+
+    """  SQIs = {
+        "qSQI": print("\033[1;" + str(qcolor) + ";m " + str(round(qSQI, 3))),
+        "pSQI": print("\033[1;" + str(pcolor) + ";m " + str(round(pSQI, 3))),
+        "cSQI": print("\033[1;" + str(ccolor) + ";m " + str(round(cSQI, 3))),
+        "kSQI": print("\033[1;" + str(kcolor) + ";m " + str(round(kSQI, 3))),
+        "sSQI": print("\033[1;31;m " + str(round(sSQI, 3))),
+        "basSQI": print("\033[1;" + str(bascolor) + ";m " + str(round(basSQI, 3))),
+        "test": print("\033[1;RED;m"),
+    } """
+
     return (
         n_optimal,
         n_suspicious,
         n_unqualified,
         conclusion,
-        qSQI,
-        pSQI,
-        cSQI,
-        kSQI,
-        sSQI,
-        basSQI,
+        SQIs,
     )
 
 
@@ -179,7 +202,10 @@ def _ecg_quality_basSQI(
 # Classificaitons
 def _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI):
     # Classify indices based on simple heuristic fusion
-    # First stage rules (0 = unqualified, 1 = suspicious, 2 = optimal)
+    # First stage rules (0 = unqualified, 1 = suspicious, 2 = optimal
+    optimal = 32  # red
+    suspicious = 33  # yellow
+    unqualified = 31  # green
 
     # Get the maximum bpm
     if len(rpeaks) > 1:
@@ -189,11 +215,11 @@ def _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI):
 
     # qSQI classification
     if qSQI < 0.45:
-        qSQI_class = 2
+        qSQI_class = optimal
     elif 0.45 <= qSQI and qSQI <= 0.64:
-        qSQI_class = 1
+        qSQI_class = suspicious
     else:
-        qSQI_class = 0
+        qSQI_class = unqualified
 
     # pSQI classification
     if heart_rate < 130:
@@ -202,41 +228,41 @@ def _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI):
         l1, l2, l3 = 0.4, 0.7, 0.3
 
     if l1 < pSQI and pSQI < l2:
-        pSQI_class = 2
+        pSQI_class = optimal
     elif l3 < pSQI and pSQI < l1:
-        pSQI_class = 1
+        pSQI_class = suspicious
     else:
-        pSQI_class = 0
+        pSQI_class = unqualified
 
     # cSQI classification
     if cSQI < 0.45:
-        cSQI_class = 2
+        cSQI_class = optimal
     elif 0.45 <= cSQI and cSQI <= 0.64:
-        cSQI_class = 1
+        cSQI_class = suspicious
     else:
-        cSQI_class = 0
+        cSQI_class = unqualified
 
     # kSQI classification
     if kSQI > 5:
-        kSQI_class = 2
+        kSQI_class = optimal
     else:
-        kSQI_class = 0
+        kSQI_class = unqualified
 
     # basSQI classification
     if 0.95 <= basSQI and basSQI <= 1:
-        basSQI_class = 2
+        basSQI_class = optimal
     elif basSQI < 0.9:
-        basSQI_class = 0
+        basSQI_class = unqualified
     else:
-        basSQI_class = 1
+        basSQI_class = suspicious
 
     class_matrix = np.array(
         [qSQI_class, pSQI_class, cSQI_class, kSQI_class, basSQI_class]
     )
 
-    n_optimal = len(np.where(class_matrix == 2)[0])
-    n_suspicious = len(np.where(class_matrix == 1)[0])
-    n_unqualified = len(np.where(class_matrix == 0)[0])
+    n_optimal = len(np.where(class_matrix == optimal)[0])
+    n_suspicious = len(np.where(class_matrix == suspicious)[0])
+    n_unqualified = len(np.where(class_matrix == unqualified)[0])
 
     if (
         n_unqualified >= 3
@@ -249,7 +275,17 @@ def _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI):
     else:
         conclusion = "Barely acceptable"
 
-    return n_optimal, n_suspicious, n_unqualified, conclusion
+    return (
+        n_optimal,
+        n_suspicious,
+        n_unqualified,
+        conclusion,
+        qSQI_class,
+        pSQI_class,
+        cSQI_class,
+        kSQI_class,
+        basSQI_class,
+    )
 
 
 # Fuzzy Clasisfication function
