@@ -2,3 +2,4 @@
 .DS_Store
 
 zz__*
+__pycache__
