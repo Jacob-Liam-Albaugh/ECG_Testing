@@ -65,22 +65,13 @@ def ecg_quality(
         bascolor,
     ) = _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI)
 
-    """  SQIs = {
-        "qSQI": str(round(qSQI, 3)) + qcolor,
-        "pSQI": str(round(pSQI, 3)) + pcolor,
-        "cSQI": str(round(cSQI, 3)) + ccolor,
-        "kSQI": str(round(kSQI, 3)) + kcolor,
-        "sSQI": str(round(sSQI, 3)),
-        "basSQI": str(round(basSQI, 3)),
-    } """
-
     SQIs = [
-        "\033[1;" + str(qcolor) + "mqSQI: \033[0;37m" + str(round(qSQI, 3)),
-        "\033[1;" + str(pcolor) + "mpSQI: \033[0;37m" + str(round(pSQI, 3)),
-        "\033[1;" + str(ccolor) + "mcSQI: \033[0;37m" + str(round(cSQI, 3)),
-        "\033[1;" + str(kcolor) + "mkSQI: \033[0;37m" + str(round(kSQI, 3)),
-        "\033[1;37msSQI: \033[0;37m" + str(round(sSQI, 3)),
-        "\033[1;" + str(bascolor) + "mbasSQI: \033[0;37m" + str(round(basSQI, 3)),
+        "\033[1;" + str(qcolor) + "mqSQI: \033[0;37m" + f"{qSQI:.3f}",
+        "\033[1;" + str(pcolor) + "mpSQI: \033[0;37m" + f"{pSQI:.3f}",
+        "\033[1;" + str(ccolor) + "mcSQI: \033[0;37m" + f"{cSQI:.3f}",
+        "\033[1;" + str(kcolor) + "mkSQI: \033[0;37m" + f"{kSQI:.3f}",
+        "\033[1;37msSQI: \033[0;37m" + f"{sSQI:.3f}",
+        "\033[1;" + str(bascolor) + "mbasSQI: \033[0;37m" + f"{basSQI:.3f}",
     ]
 
     return (

@@ -66,8 +66,6 @@ for pro in ECG_pro:
     plt.title(ECG_NAMES[idx])
     idx += 1
 
-# plt.show()
-
 # ECG Quality Analysis
 ECG_Zhao = []
 for data in ECG_DATA:
