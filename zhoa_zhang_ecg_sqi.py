@@ -65,24 +65,23 @@ def ecg_quality(
         bascolor,
     ) = _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI)
 
-    SQIs = {
-        "qSQI": round(qSQI, 3),
-        "pSQI": round(pSQI, 3),
-        "cSQI": round(cSQI, 3),
-        "kSQI": round(kSQI, 3),
-        "sSQI": round(sSQI, 3),
-        "basSQI": round(basSQI, 3),
-    }
-
     """  SQIs = {
-        "qSQI": print("\033[1;" + str(qcolor) + ";m " + str(round(qSQI, 3))),
-        "pSQI": print("\033[1;" + str(pcolor) + ";m " + str(round(pSQI, 3))),
-        "cSQI": print("\033[1;" + str(ccolor) + ";m " + str(round(cSQI, 3))),
-        "kSQI": print("\033[1;" + str(kcolor) + ";m " + str(round(kSQI, 3))),
-        "sSQI": print("\033[1;31;m " + str(round(sSQI, 3))),
-        "basSQI": print("\033[1;" + str(bascolor) + ";m " + str(round(basSQI, 3))),
-        "test": print("\033[1;RED;m"),
+        "qSQI": str(round(qSQI, 3)) + qcolor,
+        "pSQI": str(round(pSQI, 3)) + pcolor,
+        "cSQI": str(round(cSQI, 3)) + ccolor,
+        "kSQI": str(round(kSQI, 3)) + kcolor,
+        "sSQI": str(round(sSQI, 3)),
+        "basSQI": str(round(basSQI, 3)),
     } """
+
+    SQIs = [
+        "\033[1;" + str(qcolor) + "mqSQI: \033[0;37m" + str(round(qSQI, 3)),
+        "\033[1;" + str(pcolor) + "mpSQI: \033[0;37m" + str(round(pSQI, 3)),
+        "\033[1;" + str(ccolor) + "mcSQI: \033[0;37m" + str(round(cSQI, 3)),
+        "\033[1;" + str(kcolor) + "mkSQI: \033[0;37m" + str(round(kSQI, 3)),
+        "\033[1;37msSQI: \033[0;37m" + str(round(sSQI, 3)),
+        "\033[1;" + str(bascolor) + "mbasSQI: \033[0;37m" + str(round(basSQI, 3)),
+    ]
 
     return (
         n_optimal,
@@ -203,9 +202,9 @@ def _ecg_quality_basSQI(
 def _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI):
     # Classify indices based on simple heuristic fusion
     # First stage rules (0 = unqualified, 1 = suspicious, 2 = optimal
-    optimal = 32  # red
+    optimal = 32  # green
     suspicious = 33  # yellow
-    unqualified = 31  # green
+    unqualified = 31  # red
 
     # Get the maximum bpm
     if len(rpeaks) > 1:
@@ -257,7 +256,7 @@ def _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI):
         basSQI_class = suspicious
 
     class_matrix = np.array(
-        [qSQI_class, pSQI_class, cSQI_class, kSQI_class, basSQI_class]
+        [qSQI_class, pSQI_class, cSQI_class, kSQI_class]  # , basSQI_class]
     )
 
     n_optimal = len(np.where(class_matrix == optimal)[0])
@@ -270,6 +269,7 @@ def _classifiy_simple(sampling_rate, rpeaks, qSQI, pSQI, cSQI, kSQI, basSQI):
         or (n_unqualified == 1 and n_suspicious == 3)
     ):
         conclusion = "Unacceptable"
+
     elif n_optimal >= 3 and n_unqualified == 0:
         conclusion = "Excellent"
     else:
